@@ -151,7 +151,7 @@ GET /api/download/{taskId}/file
 2. Apply the application deployment and service:
 
     ```sh
-    kubectl apply -f deployment.yaml
+    kubectl apply -f app-deployment.yaml
     ```
 
 3. Check the status of the deployments:
