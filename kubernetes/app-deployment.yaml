@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stack-overflow-fetcher
+    spec:
+      containers:
+        - name: stack-overflow-fetcher-container
+          image: stack-overflow-fetcher:latest # change the image to use the one you pushed to Docker Hub
+          imagePullPolicy: Never # Use the local image only, remove it when you push the image to Docker Hub
+          env:
+            - name: REDIS_HOST
+              value: redis-service  # connect to redis-service through DNS
+            - name: REDIS_PORT
+              value: "6379"  # default port of Redis
+            - name: STACK_EXCHANGE_API_KEY
+              value:  # please specify the api key to increase the daily quota of API calls
+  selector:
+    matchLabels:
+      app: stack-overflow-fetcher
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: stack-overflow-fetcher
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
